@@ -2,14 +2,24 @@ import React, { useState } from 'react'
 import {useLocation, useNavigate} from 'react-router-dom'
 import {FcGoogle} from 'react-icons/fc'
 import auth from '../shared/Firebase.Init'
-import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth'
 
 const Login = () => {
     const navigate = useNavigate()
     const location = useLocation();
+    const [signInWithGoogle, googleUser, googleLoading, googleError] = useSignInWithGoogle(auth);
+
 
     const from = location.state?.from?.pathname || "/";
 
+    if (googleUser) {
+      navigate('/home')
+    }
+
+    let errorElement;
+    if (googleError) {
+      errorElement = <p className='text-red-500 text-center'>Error: {googleError.message}</p>
+    }
 
     const [
       signInWithEmailAndPassword,
@@ -50,9 +60,11 @@ const Login = () => {
 
                 <input className='w-full bg-blue-400 hover:bg-blue-500 duration-300 hover:text-white py-1 cursor-pointer text-center border border-purple-300 rounded' type="submit" value="Login" />
 
+                {errorElement}
+
                 <p onClick={handleNavigate} className='text-center text-blue-400 py-1 hover:underline cursor-pointer'>Please Register</p>
 
-                <div className='flex justify-around items-center bg-slate-600 cursor-pointer hover:bg-slate-700 duration-300 rounded'>
+                <div onClick={()=>signInWithGoogle()} className='flex justify-around items-center bg-slate-600 cursor-pointer hover:bg-slate-700 duration-300 rounded'>
                   <FcGoogle size={25}/>
                   <span className='text-lg text-white'>Sign In With Google</span>
                 </div>
