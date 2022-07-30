@@ -1,7 +1,17 @@
 import React from 'react'
 import { NavLink  } from 'react-router-dom'
+import {FiLogOut} from 'react-icons/fi'
+import auth from './Firebase.Init';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+
 
 const Navbar = () => {
+    const [user] = useAuthState(auth);
+
+    const handleLogout = () => {
+      signOut(auth);
+    };
 
     let activeStyle = {
         textDecoration: "underline",
@@ -41,7 +51,9 @@ const Navbar = () => {
             Blog
           </NavLink>
 
-          <NavLink
+          <div className='inline' onClick={handleLogout}>
+          {
+            user ?  <FiLogOut className='cursor-pointer inline' size={25}/> : <NavLink
             to="/login"
             style={({ isActive }) =>
               isActive ? activeStyle : undefined
@@ -49,6 +61,8 @@ const Navbar = () => {
           >
             Login
           </NavLink>
+          }
+          </div>
         </div>
 
 

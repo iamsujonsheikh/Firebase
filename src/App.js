@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Navbar from './shared/Navbar';
 import NotFound from './shared/NotFound';
+import RequireAuth from './shared/RequireAuth';
 
 function App() {
   return (
@@ -15,7 +16,11 @@ function App() {
       <Routes>
         <Route path='/' element={<Home></Home>} />
         <Route path='/home' element={<Home></Home>} />
-        <Route path='/about' element={<About></About>} />
+        <Route path='/about' element={
+          <RequireAuth>
+            <About></About>
+          </RequireAuth>
+        } />
         <Route path='/blog' element={<Blog></Blog>} />
         <Route path='/login' element={<Login></Login>} />
         <Route path='/register' element={<Register></Register>} />

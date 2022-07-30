@@ -1,25 +1,61 @@
-import React from 'react'
-import {useNavigate} from 'react-router-dom'
+import React, { useState } from 'react'
+import {useLocation, useNavigate} from 'react-router-dom'
+import {FcGoogle} from 'react-icons/fc'
+import auth from '../shared/Firebase.Init'
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
 
 const Login = () => {
     const navigate = useNavigate()
+    const location = useLocation();
+
+    const from = location.state?.from?.pathname || "/";
+
+
+    const [
+      signInWithEmailAndPassword,
+      user,
+      loading,
+      error,
+    ] = useSignInWithEmailAndPassword(auth);
 
     const handleNavigate = () =>{
         navigate('/register')
     }
 
+    if(user){
+      navigate(from, { replace: true });
+    }
+
+    const handeLoginForm = event => {
+      event.preventDefault()
+      const email = event.target.email.value;
+      const password = event.target.password.value;
+      console.log(email,password)
+      signInWithEmailAndPassword(email, password)
+    }
+
+
   return (
     <section>
         <div className='w-[300px] mx-auto'>
-             <form className='bg-slate-200 p-4 my-4 rounded drop-shadow'>
+             <form onSubmit={handeLoginForm} className='bg-slate-200 p-4 my-4 rounded drop-shadow'>
+
                 <h1 className='text-center text-xl text-slate-600 font-bold drop-shadow'>Please Login</h1><br />
+
                 <label className='text-lg text-gray-600'>E-mail</label><br />
-                <input className='rounded w-full h-8 px-2' type="email" placeholder='Enter your email' /><br />
+                <input className='rounded w-full h-8 px-2' name="email" type="email" placeholder='Enter your email' /><br />
+
                 <label className='text-lg text-gray-600'>Password</label><br />
-                <input className='rounded w-full h-8 px-2' type="password" placeholder='Enter your Password' /><br /><br />
+                <input className='rounded w-full h-8 px-2' type="password" name="password" placeholder='Enter your Password' /><br /><br />
+
                 <input className='w-full bg-blue-400 hover:bg-blue-500 duration-300 hover:text-white py-1 cursor-pointer text-center border border-purple-300 rounded' type="submit" value="Login" />
 
-                <p onClick={handleNavigate} className='text-center text-blue-400 py-1 hover:underline cursor-pointer'>Please Regiister</p>
+                <p onClick={handleNavigate} className='text-center text-blue-400 py-1 hover:underline cursor-pointer'>Please Register</p>
+
+                <div className='flex justify-around items-center bg-slate-600 cursor-pointer hover:bg-slate-700 duration-300 rounded'>
+                  <FcGoogle size={25}/>
+                  <span className='text-lg text-white'>Sign In With Google</span>
+                </div>
              </form>
         </div>
     </section>
